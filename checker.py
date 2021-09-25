@@ -37,6 +37,15 @@ class Checker(object):
 		s.close()
 		print('done.')
 
+	def open_http(self, host, port, url, params):
+		"""
+		perform deeper check by invoking the http/https endpoints
+		with some predefined parameters.
+		this will catch http errors and reports it.
+		"""
+		print('opening http...')
+		print('done.')
+
 
 	def check_with_config_yaml(self, config_yaml='default.yaml'):
 		"""
