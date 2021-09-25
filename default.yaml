@@ -1,0 +1,13 @@
+check-services:
+  - name: service-1
+    desc: Google Search Engine service
+    host: www.google.com
+    port: 443
+  - name: service-2
+    desc: Yahoo! Finance services
+    host: finance.yahoo.com
+    port: 443
+  - name: service-3
+    desc: Unknown typo services that is expected to fail
+    host: www.grooggle.comkt
+    port: 443
