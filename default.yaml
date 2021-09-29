@@ -1,13 +1,25 @@
-check-services:
+services-check:
   - name: service-1
     desc: Google Search Engine service
     host: www.google.com
     port: 443
+    url-base: https://www.google.com
   - name: service-2
     desc: Yahoo! Finance services
     host: finance.yahoo.com
     port: 443
+    url-base: https://finance.yahoo.com
   - name: service-3
     desc: Unknown typo services that is expected to fail
     host: www.grooggle.comkt
     port: 443
+    url-base: https://www.grooggle.comkt
+  - name: service-4
+    desc: Mail services
+    host: mail.google.com
+    port: 443
+    url-base: https://mail.google.com
+endpoints-check:
+  - name: endpoint-name-1
+  - service-name: service-1
+    endpoint: /mail/u/0/#inbox/FMfcgzGljvVHchBwhfhjHSzwlDFjxzMR

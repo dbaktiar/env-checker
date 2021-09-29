@@ -13,6 +13,7 @@ __status__       = "Development"
 
 
 import socket
+import urllib
 import yaml
 
 
@@ -21,11 +22,13 @@ class Checker(object):
 	Checker class.
 	"""
 
-	def __init__(self):
+	def __init__(self, config_yaml='default.yaml'):
 		"""
 		Initialize the class Checker.
 		"""
-		pass
+		print('reading yaml config file [%s]...' % (config_yaml,))
+		with open(config_yaml) as yaml_file:
+			self._config_yaml = yaml.load(yaml_file, Loader=yaml.FullLoader)
 
 	def open_socket(self, host, port):
 		"""
@@ -37,25 +40,23 @@ class Checker(object):
 		s.close()
 		print('done.')
 
-	def open_http(self, host, port, url, params):
+	def open_http(self, url_base, context_path, params):
 		"""
 		perform deeper check by invoking the http/https endpoints
 		with some predefined parameters.
 		this will catch http errors and reports it.
 		"""
-		print('opening http...')
+		url = '%s%s' % (url_base, context_path,)
+		print('opening url [%s]' % (url,))
+		f = urllib.request.urlopen(url)
+		print(f.read(1000))
 		print('done.')
 
-
-	def check_with_config_yaml(self, config_yaml='default.yaml'):
+	def check_services(self):
 		"""
 		perform the check
 		"""
-		print('reading yaml config file [%s]...' % (config_yaml,))
-		with open(r'default.yaml') as yaml_file:
-			check_yaml = yaml.load(yaml_file, Loader=yaml.FullLoader)
-			print(check_yaml)
-		for service in check_yaml['check-services']:
+		for service in self._config_yaml['services-check']:
 			print('checking services [%s]...' % (service['name']))
 			error_happened = False
 			host = service['host']
@@ -70,11 +71,34 @@ class Checker(object):
 			else:
 				print('There was no errors. Good.')
 
+	def check_endpoints(self):
+		"""
+		perform the check
+		"""
+		checklist = self._config_yaml['endpoints-check'] 
+		print(checklist)
+		for entry in checklist:
+			print('checking endpoints [%s]...' % (entry['name']))
+			error_happened = False
+			service_name = entry['service-name']
+			endpoint = entry['endpoint'] 
+			try:
+				self.open_http(host, port)
+			except socket.gaierror:
+				print('WARNING: no service listening on %s:%d' % (host, port,))
+				error_happened = True
+			if error_happened:
+				print('There was an error. Too bad.')
+			else:
+				print('There was no errors. Good.')
+
 
 if __name__ == '__main__':
 	"""
 	the main invocation point.
 	"""
 	checker = Checker()
-	checker.check_with_config_yaml()
+	# checker.check_services()
+	checker.check_endpoints()
+
 
